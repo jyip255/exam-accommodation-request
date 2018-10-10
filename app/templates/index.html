@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+{% import "bootstrap/utils.html" as utils %}
+{% import "bootstrap/wtf.html" as wtf %}
+
+{% block navbar %}
+<div class="navbar">
+  <ul class="nav nav-tabs">
+  <li role="presentation" class="active"><a href="/index">Home</a></li>
+</div>
+{% endblock %}
+
+{% block content %}
+<h1>Welcome!</h1>
+<!-- Example of form implementation -->
+<form class="form" method="post" role="form">
+  <!-- Get secret key for CSRF auth -->
+  {{ form.hidden_tag() }}
+  <!-- Show validation errors, if any -->
+  {{ wtf.form_errors(form, hiddens="only") }}
+  <!-- Input field to enter student name -->
+  {{ wtf.form_field(form.searchStudents, placeholder="Search by Student Name (Case Sensitive)", class="form-control md-5") }}
+  <!-- Submit button -->
+  {{ wtf.form_field(form.submit, class="btn btn-lg btn-info btn-block") }}
+</form>
+<hr/>
+<!-- Iterate through each item in 'results' from views.py -->
+{% for result in results %}
+<div class="text-center">
+	<!-- For each student in result, show info -->
+	<h3> {{ result.sname }} </h3>
+    <h4> SID: {{ result.sid }} </h4>
+    <h4> NetID: {{ result.netid }} </h4>
+    <h4> CID: {{ result.cid }} </h4>
+    <h4> CNAME: {{ result.cname }} </h4>
+    <hr/>
+</div>
+{% endfor %}
+{% endblock %}

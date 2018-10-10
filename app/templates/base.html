@@ -1,0 +1,12 @@
+<!-- This is the base template that all other pages are based on (uses bootstrap's base page) -->
+{%- extends "bootstrap/base.html" %}
+
+{% block title %}Senior Design{% endblock %}
+
+{% block styles -%}
+  {{super()}}
+{% endblock %}
+
+{% block navbar %}
+  {{nav.frontend_top.render()}}
+{% endblock %}
