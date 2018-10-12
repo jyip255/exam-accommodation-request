@@ -38,7 +38,6 @@ def add():
         # Add the new request to the database
         p = Demo3(sid=form.sid.data, sname=form.sname.data, netid=form.netid.data, cid=form.cid.data, cname=form.cname.data)
         db.session.add(p)
-        db.session.commit()
         return render_template('requestAdd.html', form=form, msg="Exam request added!")
     return render_template('requestAdd.html', form=form)
 
@@ -46,10 +45,6 @@ def add():
 def requestList():
     # Get all records in Demo3 table (can look up SQLAlchemy commands to filter results, uses Demo3 in models.py)
     students = Demo3.query.all()
-    # For each student
-    for student in students:
-        # Display all info from DB (see console)
-        print('<SID:{}, SNAME:{}, NETID:{}, CID:{}, CNAME:{}>'.format(student.sid, student.sname, student.netid, student.cid, student.cname))
     # Send information to requestList.html to be shown on screen
     return render_template('requestList.html', rows = students)
 
