@@ -35,20 +35,11 @@ def add():
     # Get AddForm from forms.py
     form = AddForm(request.form)
     if form.validate_on_submit():
-        # Input for the information
-        sidQuery = Demo3.query.filter_by(sid=form.sid.data).all()
-        snameQuery = Demo3.query.filter_by(sname=form.sname.data).all()
-        netidQuery = Demo3.query.filter_by(netid=form.netid.data).all()
-        cidQuery = Demo3.query.filter_by(cid=form.cid.data).all()
-        cnameQuery = Demo3.query.filter_by(cname=form.cname.data).all()
-        #if (sidQuery == []) or (snameQuery == []):
-            # return render_template('requestAdd.html', form=form, msg="Invalid track or playlist name.")
-        # If the input is valid, add the new request to the database
-        #else:
-        p = Demo3(sid=sidQuery[0].sid, sname=snameQuery[0].sname, netid=netidQuery[0].netid, cid=cidQuery[0].cid, cname=cnameQuery[0].cname)
+        # Add the new request to the database
+        p = Demo3(sid=form.sid.data, sname=form.sname.data, netid=form.netid.data, cid=form.cid.data, cname=form.cname.data)
         db.session.add(p)
         db.session.commit()
-        return render_template('requestAdd.html', form=form, msg="Track added!")
+        return render_template('requestAdd.html', form=form, msg="Exam request added!")
     return render_template('requestAdd.html', form=form)
 
 @app.route('/requestList')
