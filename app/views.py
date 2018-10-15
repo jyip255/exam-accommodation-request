@@ -38,6 +38,7 @@ def add():
         # Add the new request to the database
         p = Demo3(sid=form.sid.data, sname=form.sname.data, netid=form.netid.data, cid=form.cid.data, cname=form.cname.data)
         db.session.add(p)
+        db.session.commit()
         return render_template('requestAdd.html', form=form, msg="Exam request added!")
     return render_template('requestAdd.html', form=form)
 
