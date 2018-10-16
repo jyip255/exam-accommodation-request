@@ -18,7 +18,7 @@
         <div class="navbar-collapse collapse">
             <ul class="nav navbar-nav">
                 <li><a href="/index">Home</a></li>
-                <li><a href="/requestAdd">Add Requests</a></li>
+                <li><a href="/requestAdd">Add Request</a></li>
                 <li><a href="/requestList">List of Exam Requests</a></li>
             </ul>
         </div>
@@ -31,11 +31,26 @@
 <form class="form" method="post" role="form">
   {{ form.hidden_tag() }}
   {{ wtf.form_errors(form, hiddens="only") }}
-  {{ wtf.form_field(form.sname, placeholder="Enter Student ID (Case Sensitive)", class="form-control md-5") }}
-  {{ wtf.form_field(form.sid, placeholder="Enter Student Name (Case Sensitive)", class="form-control md-5") }}
-  {{ wtf.form_field(form.netid, placeholder="Enter Student NetID(Case Sensitive)", class="form-control md-5") }}
-  {{ wtf.form_field(form.cid, placeholder="Enter Course ID (Case Sensitive)", class="form-control md-5") }}
-  {{ wtf.form_field(form.cname, placeholder="Enter Course Name (Case Sensitive)", class="form-control md-5") }}
+  {{ wtf.form_field(form.student_id, placeholder="Enter Peoplesoft ID # (Case Sensitive)", class="form-control md-5") }}
+  {{ wtf.form_field(form.student_netid, placeholder="Enter Student Net ID (Case Sensitive)", class="form-control md-5") }}
+  {{ wtf.form_field(form.student_name, placeholder="Enter Student Name (Case Sensitive)", class="form-control md-5") }}
+  {{ wtf.form_field(form.course_id, placeholder="Enter Course ID (Case Sensitive)", class="form-control md-5") }}
+  {{ wtf.form_field(form.course_name, placeholder="Enter Course Name (Case Sensitive)", class="form-control md-5") }}
+  {{ wtf.form_field(form.exam_type, placeholder="Enter Exam Type (Case Sensitive)", class="form-control md-5") }}
+  {{ wtf.form_field(form.exam_format, placeholder="Enter Exam Format (Case Sensitive)", class="form-control md-5") }}
+  {{ wtf.form_field(form.exam_time, placeholder="Enter Exam Time (Case Sensitive)", class="form-control md-5") }}
+  {{ wtf.form_field(form.exam_csd_time, placeholder="Enter Exam CSD Time (Case Sensitive)", class="form-control md-5") }}
+  {{ wtf.form_field(form.csd_campus, placeholder="Enter CSD Campus (Case Sensitive)", class="form-control md-5") }}
+  {{ wtf.form_field(form.csd_building, placeholder="Enter CSD Building (Case Sensitive)", class="form-control md-5") }}
+  {{ wtf.form_field(form.csd_room, placeholder="Enter CSD Room (Case Sensitive)", class="form-control md-5") }}
+  {{ wtf.form_field(form.csd_seat, placeholder="Enter CSD Seat (Case Sensitive)", class="form-control md-5") }}
+  {{ wtf.form_field(form.instructor_netid, placeholder="Enter Instructor Net ID (Case Sensitive)", class="form-control md-5") }}
+  {{ wtf.form_field(form.instructor_name, placeholder="Enter Instructor Name (Case Sensitive)", class="form-control md-5") }}
+  {{ wtf.form_field(form.instructor_phone, placeholder="Enter Instructor Phone (Case Sensitive)", class="form-control md-5") }}
+  {{ wtf.form_field(form.instructor_email, placeholder="Enter Instructor Email (Case Sensitive)", class="form-control md-5") }}
+  {{ wtf.form_field(form.material, placeholder="Enter Material (Case Sensitive)", class="form-control md-5") }}
+  {{ wtf.form_field(form.accommodations, placeholder="Enter Accommodations (Case Sensitive)", class="form-control md-5") }}
+  {{ wtf.form_field(form.instructor_notes, placeholder="Enter Instructor Notes (Case Sensitive)", class="form-control md-5") }}
   {{ wtf.form_field(form.submit, class="btn btn-lg btn-info btn-block") }}
 </form>
 <div class="text-center">

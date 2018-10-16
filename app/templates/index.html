@@ -18,7 +18,7 @@
         <div class="navbar-collapse collapse">
             <ul class="nav navbar-nav">
                 <li><a href="/index">Home</a></li>
-                <li><a href="/requestAdd">Add Requests</a></li>
+                <li><a href="/requestAdd">Add Request</a></li>
                 <li><a href="/requestList">List of Exam Requests</a></li>
             </ul>
         </div>
@@ -44,11 +44,26 @@
 {% for result in results %}
 <div class="text-center">
 	<!-- For each student in result, show info -->
-	<h3> {{ result.sname }} </h3>
-    <h4> SID: {{ result.sid }} </h4>
-    <h4> NetID: {{ result.netid }} </h4>
-    <h4> CID: {{ result.cid }} </h4>
-    <h4> CNAME: {{ result.cname }} </h4>
+	<h3> {{ result.student_name }} </h3>
+    <h4> STUDENT_ID: {{ result.student_id }} </h4>
+    <h4> STUDENT_NETID: {{ result.student_netid }} </h4>
+    <h4> COURSE_ID: {{ result.course_id }} </h4>
+    <h4> COURSE_NAME: {{ result.course_name }} </h4>
+    <h4> EXAM_TYPE: {{ result.exam_type }} </h4>
+    <h4> EXAM_FORMAT: {{ result.exam_format }} </h4>
+    <h4> EXAM_TIME: {{ result.exam_time }} </h4>
+    <h4> EXAM_CSD_TIME: {{ result.exam_csd_time }} </h4>
+    <h4> CSD_CAMPUS: {{ result.csd_campus }} </h4>
+    <h4> CSD_BUILDING: {{ result.csd_building }} </h4>
+    <h4> CSD_ROOM: {{ result.csd_room }} </h4>
+    <h4> CSD_SEAT: {{ result.csd_seat }} </h4>
+    <h4> INSTRUCTOR_NETID: {{ result.instructor_netid }} </h4>
+    <h4> INSTRUCTOR_NAME: {{ result.instructor_name }} </h4>
+    <h4> INSTRUCTOR_PHONE: {{ result.instructor_phone }} </h4>
+    <h4> INSTRUCTOR_EMAIL: {{ result.instructor_email }} </h4>
+    <h4> MATERIAL: {{ result.material }} </h4>
+    <h4> ACCOMMODATIONS: {{ result.accommodations }} </h4>
+    <h4> INSTRUCTOR_NOTES: {{ result.instructor_notes }} </h4>
     <hr/>
 </div>
 {% endfor %}
