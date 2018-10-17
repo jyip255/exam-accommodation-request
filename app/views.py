@@ -2,7 +2,7 @@ from flask import render_template, request
 from app import app, db
 from time import localtime, strftime
 
-from app.forms import StudentForm, AddForm, PrintForm
+from app.forms import StudentForm, AddForm
 from app.models import Demo3
 
 @app.route('/', methods=['GET', 'POST'])
