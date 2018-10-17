@@ -30,3 +30,6 @@ class AddForm(FlaskForm):
     accommodations = StringField('', validators=[DataRequired()])
     instructor_notes = StringField('')
     submit = SubmitField('Submit')
+
+class PrintForm(FlaskForm):
+    view = SubmitField('View')

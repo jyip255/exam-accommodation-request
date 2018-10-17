@@ -1,7 +1,8 @@
 from flask import render_template, request
 from app import app, db
+from time import localtime, strftime
 
-from app.forms import StudentForm, AddForm
+from app.forms import StudentForm, AddForm, PrintForm
 from app.models import Demo3
 
 @app.route('/', methods=['GET', 'POST'])
@@ -62,10 +63,15 @@ def add():
         return render_template('requestAdd.html', form=form, msg="Exam request added!")
     return render_template('requestAdd.html', form=form)
 
-@app.route('/requestList')
+@app.route('/requestList', methods=['GET', 'POST'])
 def requestList():
-    # Get all records in Demo3 table (can look up SQLAlchemy commands to filter results, uses Demo3 in models.py)
-    students = Demo3.query.all()
-    # Send information to requestList.html to be shown on screen
-    return render_template('requestList.html', rows = students)
+    rows = Demo3.query.all()
+    return render_template('requestList.html', rows = rows)
+
+@app.route('/print/<netid>', methods=['GET', 'POST'])
+def print(netid):
+    # May need to change to be based on request id instead of netid after adding primary key (request id) to db
+    req = Demo3.query.filter(Demo3.student_netid==netid).first()
+    currentTime = strftime("%m/%d/%Y %I:%M %p", localtime())
+    return render_template('print.html', req=req, currentTime = currentTime)
 
