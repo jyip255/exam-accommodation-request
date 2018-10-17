@@ -3,7 +3,7 @@
 {% import "bootstrap/wtf.html" as wtf %}
 
 {% block styles %}
-{{super()}}
+  {{super()}}
   <link rel="stylesheet" href="{{ url_for('.static', filename='printpage.css') }}">
 {% endblock %}
 
@@ -37,14 +37,14 @@
     </ul>
     <div>Instructor Notes: {{ req.instructor_notes }}</div>
     <br>
-    <div><b>Please read and sign the following statement <i><u>prior</u></i> to starting your exam:</b></div>
+    <div><strong>Please read and sign the following statement <em>prior</em> to starting your exam:</strong></div>
     <br>
     <div>I acknowledge that I have used the restroom (if needed) before the exam, have removed jackets/baggy clothing and hats and have ensured that all personal items (including phone and other electronics) are silenced and put away with my other belongings (e.g., backpack).  I understand I cannot be excused from the exam room unless it is for a previously approved accommodation.  I understand that I must stop my exam and turn it in when I am notified that my time is done.  I also understand I will be proctored (in person or by video monitoring) during this exam at the CSD.  If proctors observe suspicious behavior (cheating), they will notify the Accommodations Coordinator who will take my exam from me and notify my instructor of the suspicious behavior.  I acknowledge that academic misconduct will forfeit my eligibility to take my exams at the CSD and all future exams will be scheduled and proctored by my instructor or TA.  According to the University's Responsibilities of Community Life: The Student Code, academic misconduct is dishonest or unethical academic behavior that includes, but is not limited to, misrepresenting mastery in an academic area (e.g., cheating), failing to properly credit information, research, or ideas to their rightful originators or representing such information, research, or ideas as your own (e.g., plagiarism). </div>
     <br>
     <div>Signature _________________________________________________ Date_______________________</div>
     <br>
-    <div><b>Please read and sign the following statement <i><u>after</u>
-    </i> completing your exam:</b></div>
+    <div><strong>Please read and sign the following statement <em>after
+    </em> completing your exam:</strong></div>
     <br>
     <div>I acknowledge that this exam was taken in accordance with the Student Code at the Center for Students with Disabilities with my approved accommodations. The accommodations were appropriate and testing conditions satisfactory. Any unsatisfactory conditions should be indicated below.</div>
     <br>
