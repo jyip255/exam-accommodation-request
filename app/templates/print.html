@@ -8,8 +8,8 @@
 {% endblock %}
 
 {% block scripts %}
-{{super()}}
 <script src="{{url_for('.static', filename='printpage.js')}}"></script>
+{{super()}}
 {% endblock %}
 
 {% block content %}
@@ -56,7 +56,7 @@
     <br>
     <div>Exam Security Bag#:________________</div>
     <br><br>
-    <button class="btn btn-lg btn-info btn-block hidden-print" onclick="printPage()">Print Cover Sheet</button>
+    <button class="btn btn-lg btn-info btn-block hidden-print" id="printBtn">Print Cover Sheet</button>
     <br>
 </div>
 {% endblock %}
