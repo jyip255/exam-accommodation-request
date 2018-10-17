@@ -1,0 +1,62 @@
+{% extends "base.html" %}
+{% import "bootstrap/utils.html" as utils %}
+{% import "bootstrap/wtf.html" as wtf %}
+
+{% block styles %}
+  {{super()}}
+  <link rel="stylesheet" href="{{ url_for('.static', filename='printpage.css') }}">
+{% endblock %}
+
+{% block scripts %}
+<script src="{{url_for('.static', filename='printpage.js')}}"></script>
+{{super()}}
+{% endblock %}
+
+{% block content %}
+<div class="space-small">
+    <h2>Student: {{ req.student_name }}</h2>
+    <h3>Exam: {{ req.course_id }} exam</h3>
+    <h4>This cover sheet printed {{ currentTime }}</h4>
+    <div>CSD exam time: {{ req.exam_csd_time }}</div>
+    <div>CSD exam location: {{ req.csd_campus }} - {{ req.csd_building }} - {{ req.csd_room }}, seat {{ req.csd_seat }}</div>
+    <div>Instructor: {{ req.instructor_email }}</div>
+    <div>Instructor phone: {{ req.instructor_phone }}</div>
+    <div>Class exam time: {{ req.exam_time }}</div>
+    <div>Format: {{ req.exam_format }}</div>
+    <div>Material Allowed:</div>
+    <br>
+    <ul>
+        <!-- Change to for loop when material is a list (not string) -->
+        <li>{{ req.material }}</li>
+    </ul>
+    <div>Accommodations:</div>
+    <br>
+    <ul>
+        <!-- Change to for loop when accomodations is a list (not string) -->
+        <li>{{ req.accommodations }}</li>
+    </ul>
+    <div>Instructor Notes: {{ req.instructor_notes }}</div>
+    <br>
+    <div><strong>Please read and sign the following statement <em>prior</em> to starting your exam:</strong></div>
+    <br>
+    <div>I acknowledge that I have used the restroom (if needed) before the exam, have removed jackets/baggy clothing and hats and have ensured that all personal items (including phone and other electronics) are silenced and put away with my other belongings (e.g., backpack).  I understand I cannot be excused from the exam room unless it is for a previously approved accommodation.  I understand that I must stop my exam and turn it in when I am notified that my time is done.  I also understand I will be proctored (in person or by video monitoring) during this exam at the CSD.  If proctors observe suspicious behavior (cheating), they will notify the Accommodations Coordinator who will take my exam from me and notify my instructor of the suspicious behavior.  I acknowledge that academic misconduct will forfeit my eligibility to take my exams at the CSD and all future exams will be scheduled and proctored by my instructor or TA.  According to the University's Responsibilities of Community Life: The Student Code, academic misconduct is dishonest or unethical academic behavior that includes, but is not limited to, misrepresenting mastery in an academic area (e.g., cheating), failing to properly credit information, research, or ideas to their rightful originators or representing such information, research, or ideas as your own (e.g., plagiarism). </div>
+    <br>
+    <div>Signature _________________________________________________ Date_______________________</div>
+    <br>
+    <div><strong>Please read and sign the following statement <em>after
+    </em> completing your exam:</strong></div>
+    <br>
+    <div>I acknowledge that this exam was taken in accordance with the Student Code at the Center for Students with Disabilities with my approved accommodations. The accommodations were appropriate and testing conditions satisfactory. Any unsatisfactory conditions should be indicated below.</div>
+    <br>
+    <div>Signature _________________________________________________ Date_______________________</div>
+    <br>
+    <div>Notes/Comments: (Please date and initial)</div>
+    <br><br><br>
+    <div>Pick up/Delivery (circle one)       Print Name ____________________________ Date ________________</div>
+    <br>
+    <div>Exam Security Bag#:________________</div>
+    <br><br>
+    <button class="btn btn-lg btn-info btn-block hidden-print" id="printBtn">Print Cover Sheet</button>
+    <br>
+</div>
+{% endblock %}
