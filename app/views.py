@@ -1,9 +1,20 @@
-from flask import render_template, request
+from flask import render_template, request, url_for
 from app import app, db
 from time import localtime, strftime
 
+# QR code additions
+import pyqrcode
+import png
+from PIL import Image
+import pyzbar.pyzbar as pyzbar
+
 from app.forms import StudentForm, AddForm
 from app.models import Demo3
+
+# Quick fix for uploading to show QR Code
+from flask_uploads import UploadSet, configure_uploads, IMAGES
+photos = UploadSet('photos', IMAGES)
+configure_uploads(app, photos)
 
 @app.route('/', methods=['GET', 'POST'])
 @app.route('/index', methods=['GET', 'POST'])
@@ -73,5 +84,18 @@ def print(netid):
     # May need to change to be based on request id instead of netid after adding primary key (request id) to db
     req = Demo3.query.filter(Demo3.student_netid==netid).first()
     currentTime = strftime("%m/%d/%Y %I:%M %p", localtime())
-    return render_template('print.html', req=req, currentTime = currentTime)
+    filename = "./app/static/qrcodes/"+netid+".png"
+    qr = pyqrcode.create("yourapp.uconn.edu/exam_requests/"+netid)
+    qr.png(filename, scale=4)
+    return render_template('print.html', req=req, currentTime = currentTime, filename="qrcodes/"+netid+".png")
+
+# Quick fix for uploading to show QR Code
+@app.route('/upload', methods=['GET', 'POST'])
+def upload():
+    if request.method == 'POST' and 'photo' in request.files:
+        filename = photos.save(request.files['photo'])
+        filename = 'app/static/uploads/'+filename
+        decodedImg = pyzbar.decode(Image.open(filename))[0].data.decode("utf-8")
+        return render_template('upload.html', msg="The QR code reads: "+decodedImg)
+    return render_template('upload.html')
 

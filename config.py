@@ -6,3 +6,6 @@ class Config(object):
     SQLALCHEMY_DATABASE_URI = os.environ.get('DATABASE_URL') or \
         'sqlite:///' + os.path.join(basedir, 'demo3.db')
     SQLALCHEMY_TRACK_MODIFICATIONS = False
+    # Quick fix for uploading to show QR Code
+    UPLOADED_PHOTOS_DEST = 'app/static/uploads'
+

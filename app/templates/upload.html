@@ -1,0 +1,14 @@
+<!-- Quick fix for uploading to show QR Code -->
+{% extends "base.html" %}
+{% import "bootstrap/utils.html" as utils %}
+{% import "bootstrap/wtf.html" as wtf %}
+
+{% block content %}
+  <h1>Read QR Code</h1>
+  <form method=POST enctype=multipart/form-data action="{{ url_for('upload') }}">
+	  <input type=file name=photo>
+	  <br>
+	  <input type="submit" class="btn btn-md btn-info">
+  </form>
+  <h3>{{ msg }}<h3>
+{% endblock %}
