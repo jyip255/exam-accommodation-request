@@ -3,7 +3,7 @@ from app import app, db
 from time import localtime, strftime
 
 from app.forms import StudentForm, AddForm
-from app.models import Demo3
+from app.models import Examrequest
 
 @app.route('/', methods=['GET', 'POST'])
 @app.route('/index', methods=['GET', 'POST'])
@@ -14,15 +14,15 @@ def index():
     if form.validate_on_submit():
         # Display form input (see console)
         print(form.searchStudents.data)
-        # Get all records in Demo3 table (can look up SQLAlchemy commands to filter results, uses Demo3 in models.py)
-        students = Demo3.query.all()
+        # Get all records in Examrequest table (can look up SQLAlchemy commands to filter results, uses Examrequest in models.py)
+        students = Examrequest.query.all()
         # Initialize list that will contain students where name matches form input
         searchResults = []
         # For each student
         for student in students:
             # Display all info from DB (see console)
-            print('<STUDENT_ID:{}, STUDENT_NETID:{}, STUDENT_NAME:{}, COURSE_ID:{}, COURSE_NAME:{}, EXAM_TYPE:{}, EXAM_FORMAT:{}, EXAM_TIME:{}, EXAM_CSD_TIME:{}, CSD_CAMPUS:{}, CSD_BUILDING:{}, CSD_ROOM:{}, CSD_SEAT:{}, INSTRUCTOR_NETID:{}, INSTRUCTOR_NAME:{}, INSTRUCTOR_PHONE:{}, INSTRUCTOR_EMAIL:{}, MATERIAL:{}, ACCOMMODATIONS:{}, INSTRUCTOR_NOTES:{}>'
-                .format(student.student_id, student.student_netid, student.student_name,  student.course_id, student.course_name, student.exam_type, student.exam_format, student.exam_time, student.exam_csd_time, student.csd_campus, student.csd_building, student.csd_room, student.csd_seat, student.instructor_netid, student.instructor_name, student.instructor_phone, student.instructor_email, student.material, student.accommodations, student.instructor_notes))
+            print('ID:{}, STUDENT_ID:{}, STUDENT_NETID:{}, STUDENT_NAME:{}, COURSE_ID:{}, COURSE_NAME:{}, EXAM_TYPE:{}, EXAM_FORMAT:{}, EXAM_TIME:{}, EXAM_CSD_TIME:{}, CSD_CAMPUS:{}, CSD_BUILDING:{}, CSD_ROOM:{}, CSD_SEAT:{}, INSTRUCTOR_NETID:{}, INSTRUCTOR_NAME:{}, INSTRUCTOR_PHONE:{}, INSTRUCTOR_EMAIL:{}, MATERIAL:{}, ACCOMMODATIONS:{}, INSTRUCTOR_NOTES:{}>'
+                .format(student.id, student.student_id, student.student_netid, student.student_name,  student.course_id, student.course_name, student.exam_type, student.exam_format, student.exam_time, student.exam_csd_time, student.csd_campus, student.csd_building, student.csd_room, student.csd_seat, student.instructor_netid, student.instructor_name, student.instructor_phone, student.instructor_email, student.material, student.accommodations, student.instructor_notes))
             # Check if student name matches form input
             if student.student_name == form.searchStudents.data:
                 # If so, add student to search results
@@ -38,7 +38,7 @@ def add():
     form = AddForm(request.form)
     if form.validate_on_submit():
         # Add the new request to the database
-        p = Demo3(student_id=form.student_id.data,
+        p = Examrequest(student_id=form.student_id.data,
             student_netid=form.student_netid.data,
             student_name=form.student_name.data, 
             course_id=form.course_id.data, 
@@ -65,13 +65,13 @@ def add():
 
 @app.route('/requestList', methods=['GET', 'POST'])
 def requestList():
-    rows = Demo3.query.all()
+    rows = Examrequest.query.all()
     return render_template('requestList.html', rows = rows)
 
 @app.route('/print/<netid>', methods=['GET', 'POST'])
 def print(netid):
     # May need to change to be based on request id instead of netid after adding primary key (request id) to db
-    req = Demo3.query.filter(Demo3.student_netid==netid).first()
+    req = Examrequest.query.filter(Examrequest.student_netid==netid).first()
     currentTime = strftime("%m/%d/%Y %I:%M %p", localtime())
     return render_template('print.html', req=req, currentTime = currentTime)
 
