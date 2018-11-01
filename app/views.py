@@ -1,12 +1,14 @@
 from flask import render_template, request
 from app import app, db
 from time import localtime, strftime
+from flask_cas import login_required
 
 from app.forms import StudentForm, AddForm
 from app.models import Demo3
 
 @app.route('/', methods=['GET', 'POST'])
 @app.route('/index', methods=['GET', 'POST'])
+@login_required
 def index():
     # Get student name from form
     form = StudentForm(request.form)
