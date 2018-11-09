@@ -1,12 +1,20 @@
-from flask import render_template, request
+from flask import render_template, request, redirect, url_for
 from app import app, db
 from time import localtime, strftime
+from werkzeug import secure_filename
+import os
 
 from app.forms import StudentForm, AddForm
 from app.models import Examrequest
 
+UPLOAD_FOLDER = '/images'
+ALLOWED_EXTENSIONS=set(['pdf','jpg'])
+app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+APP_ROOT = os.path.dirname(os.path.abspath(__file__))
+
 @app.route('/', methods=['GET', 'POST'])
 @app.route('/index', methods=['GET', 'POST'])
+
 def index():
     # Get student name from form
     form = StudentForm(request.form)
@@ -32,6 +40,10 @@ def index():
     # If form is not validated or is making GET request (not POST), return index.html without results
     return render_template('index.html', form=form)
 
+def allowed_file(filename):
+    return '.' in filename and \
+        filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+        
 @app.route('/requestAdd', methods=['GET','POST'])
 def add():
     # Get AddForm from forms.py
@@ -74,4 +86,17 @@ def print(netid):
     req = Examrequest.query.filter(Examrequest.student_netid==netid).first()
     currentTime = strftime("%m/%d/%Y %I:%M %p", localtime())
     return render_template('print.html', req=req, currentTime = currentTime)
+
+@app.route('/upload', methods=['GET', 'POST'])
+def upload():
+    target = os.path.join(APP_ROOT, 'images/')
+    for file in request.files.getlist("file"):
+        if allowed_file(file.filename):
+            filename = secure_filename(file.filename)
+            destination = "/".join([target, filename])
+            file.save(destination)
+        else:
+            return render_template('uploadError.html')
+    return render_template('upload.html')
+    
 
