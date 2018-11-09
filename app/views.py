@@ -1,15 +1,18 @@
-from flask import render_template, request
+from flask import render_template, request, abort
 from app import app, db
 from time import localtime, strftime
 from flask_cas import login_required
+from . import cas
 
 from app.forms import StudentForm, AddForm
-from app.models import Demo3
+from app.models import Demo3, Users
 
 @app.route('/', methods=['GET', 'POST'])
 @app.route('/index', methods=['GET', 'POST'])
 @login_required
 def index():
+    if Users.query.filter_by(netid=cas.username).all()==[]:
+        abort(403)
     # Get student name from form
     form = StudentForm(request.form)
     # Make sure form has valid inputs & is making POST request
