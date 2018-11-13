@@ -1,0 +1,7 @@
+{% extends "base.html" %}
+{% import "bootstrap/utils.html" as utils %}
+{% import "bootstrap/wtf.html" as wtf %}
+
+{% block content %}
+<img src="{{url_for('static', filename=image_name)}}"> 
+{% endblock %}

@@ -8,6 +8,10 @@ import png
 from PIL import Image
 import pyzbar.pyzbar as pyzbar
 
+from werkzeug import secure_filename
+from pdf2image import convert_from_path
+import os
+
 from app.forms import StudentForm, AddForm
 from app.models import Demo3
 
@@ -15,6 +19,11 @@ from app.models import Demo3
 from flask_uploads import UploadSet, configure_uploads, IMAGES
 photos = UploadSet('photos', IMAGES)
 configure_uploads(app, photos)
+
+UPLOAD_FOLDER = '/images'
+ALLOWED_EXTENSIONS=set(['pdf','jpg'])
+app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+APP_ROOT = os.path.dirname(os.path.abspath(__file__))
 
 @app.route('/', methods=['GET', 'POST'])
 @app.route('/index', methods=['GET', 'POST'])
@@ -42,6 +51,10 @@ def index():
         return render_template('index.html', form=form, results=searchResults)
     # If form is not validated or is making GET request (not POST), return index.html without results
     return render_template('index.html', form=form)
+
+def allowed_file(filename):
+    return '.' in filename and \
+        filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
 @app.route('/requestAdd', methods=['GET','POST'])
 def add():
@@ -98,4 +111,33 @@ def upload():
         decodedImg = pyzbar.decode(Image.open(filename))[0].data.decode("utf-8")
         return render_template('upload.html', msg="The QR code reads: "+decodedImg)
     return render_template('upload.html')
+
+@app.route('/uploadPdf', methods=['GET', 'POST'])
+def uploadPdf():
+    target = os.path.join(APP_ROOT, 'static/')
+
+    if not os.path.isdir(target):
+        os.mkdir(target)
+
+    for file in request.files.getlist("file"):
+        if allowed_file(file.filename):
+            filename = secure_filename(file.filename)
+            notypename = filename[:-4]
+
+            pages = convert_from_path(filename, 500)
+
+            i = 1
+            for page in pages:
+                destination = "/".join([target, notypename + str(i) + ".jpg"])
+                page.save(destination)
+                i+=1
+
+            return render_template('complete.html', image_name=notypename+str(1)+".jpg")
+
+            #destination = "/".join([target, tojpg + ".jpg"])
+            #file.save(destination)
+        else:
+            return render_template('uploadPdfError.html')
+    return render_template('uploadPdf.html')
+
 
