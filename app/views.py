@@ -4,8 +4,28 @@ from time import localtime, strftime
 from werkzeug import secure_filename
 import os
 
+# QR code additions
+import pyqrcode
+import png
+from PIL import Image
+import pyzbar.pyzbar as pyzbar
+
+from werkzeug import secure_filename
+from pdf2image import convert_from_path
+import os
+
 from app.forms import StudentForm, AddForm
 from app.models import Examrequest
+
+UPLOAD_FOLDER = '/images'
+ALLOWED_EXTENSIONS=set(['pdf','jpg'])
+app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+APP_ROOT = os.path.dirname(os.path.abspath(__file__))
+
+# Quick fix for uploading to show QR Code
+from flask_uploads import UploadSet, configure_uploads, IMAGES
+photos = UploadSet('photos', IMAGES)
+configure_uploads(app, photos)
 
 UPLOAD_FOLDER = '/images'
 ALLOWED_EXTENSIONS=set(['pdf','jpg'])
@@ -85,18 +105,47 @@ def print(netid):
     # May need to change to be based on request id instead of netid after adding primary key (request id) to db
     req = Examrequest.query.filter(Examrequest.student_netid==netid).first()
     currentTime = strftime("%m/%d/%Y %I:%M %p", localtime())
-    return render_template('print.html', req=req, currentTime = currentTime)
+    filename = "./app/static/qrcodes/"+netid+".png"
+    qr = pyqrcode.create("yourapp.uconn.edu/exam_requests/"+netid)
+    qr.png(filename, scale=4)
+    return render_template('print.html', req=req, currentTime = currentTime, filename="qrcodes/"+netid+".png")
 
+# Quick fix for uploading to show QR Code
 @app.route('/upload', methods=['GET', 'POST'])
 def upload():
-    target = os.path.join(APP_ROOT, 'images/')
+    if request.method == 'POST' and 'photo' in request.files:
+        filename = photos.save(request.files['photo'])
+        filename = 'app/static/uploads/'+filename
+        decodedImg = pyzbar.decode(Image.open(filename))[0].data.decode("utf-8")
+        return render_template('upload.html', msg="The QR code reads: "+decodedImg)
+    return render_template('upload.html')
+
+@app.route('/uploadPdf', methods=['GET', 'POST'])
+def uploadPdf():
+    target = os.path.join(APP_ROOT, 'static/')
+
+    if not os.path.isdir(target):
+        os.mkdir(target)
+
     for file in request.files.getlist("file"):
         if allowed_file(file.filename):
             filename = secure_filename(file.filename)
-            destination = "/".join([target, filename])
-            file.save(destination)
+            notypename = filename[:-4]
+
+            pages = convert_from_path(filename, 500)
+
+            i = 1
+            for page in pages:
+                destination = "/".join([target, notypename + str(i) + ".jpg"])
+                page.save(destination)
+                i+=1
+
+            return render_template('complete.html', image_name=notypename+str(1)+".jpg")
+
+            #destination = "/".join([target, tojpg + ".jpg"])
+            #file.save(destination)
         else:
-            return render_template('uploadError.html')
-    return render_template('upload.html')
+            return render_template('uploadPdfError.html')
+    return render_template('uploadPdf.html')
     
 
