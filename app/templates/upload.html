@@ -1,0 +1,17 @@
+<!-- Quick fix for uploading to show QR Code -->
+{% extends "base.html" %}
+{% import "bootstrap/utils.html" as utils %}
+{% import "bootstrap/wtf.html" as wtf %}
+
+{% block content %}
+  <h1>Read QR Code</h1>
+  <div>Upload a JPEG file to read the QR code on the page. (MUST be .jpg, testing purposes only)</div>
+  <div>For an example, save one of the cover sheets as a JPEG. (The QR code is auto-generated and contains a mock link that ends with the student's NetID.)</div>
+  <br>
+  <form method=POST enctype=multipart/form-data action="{{ url_for('upload') }}">
+	  <input type=file name=photo>
+	  <br>
+	  <input type="submit" class="btn btn-md btn-info">
+  </form>
+  <h3>{{ msg }}<h3>
+{% endblock %}
