@@ -8,15 +8,16 @@
         <thead>
             <tr>
                 <th scope="col">Cover Sheet</th>
+                <th scope="col">Request ID</th>
                 <th scope="col">Peoplesoft ID #</th>
-                <th scope="col">Student Name</th>
                 <th scope="col">Student Net ID</th>
+                <th scope="col">Student Name</th>
                 <th scope="col">Course ID</th>
                 <th scope="col">Course Name</th>
                 <th scope="col">Exam Type</th>
                 <th scope="col">Exam Format</th>
-                <th scope="col">Exam Time</th>
-                <th scope="col">Exam CSD Time</th>
+                <th scope="col">Original Exam Time</th>
+                <th scope="col">CSD Exam Time</th>
                 <th scope="col">CSD Campus</th>
                 <th scope="col">CSD Building</th>
                 <th scope="col">CSD Room</th>
@@ -38,6 +39,7 @@
                         <button class="btn btn-info" type="submit">Print</button>
                     </form>
                 </th>
+                <td>{{row["id"]}}</td>
                 <td>{{row["student_id"]}}</td>
                 <td>{{row["student_netid"]}}</td>
                 <td>{{row["student_name"]}}</td>

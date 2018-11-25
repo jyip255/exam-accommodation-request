@@ -19,8 +19,9 @@
 <!-- Iterate through each item in 'results' from views.py -->
 {% for result in results %}
 <div class="text-center">
-    <!-- For each student in result, show info -->
-    <h3> {{ result.student_name }} </h3>
+	<!-- For each student in result, show info -->
+	<h3> {{ result.student_name }} </h3>
+    <h4> ID: {{ result.id }} </h4>
     <h4> STUDENT_ID: {{ result.student_id }} </h4>
     <h4> STUDENT_NETID: {{ result.student_netid }} </h4>
     <h4> COURSE_ID: {{ result.course_id }} </h4>

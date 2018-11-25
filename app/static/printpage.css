@@ -2,8 +2,8 @@
 	line-height: 120%;
 }
 
-large-text {
-	font-size: 30px;
+.pic {
+	float: right;
 }
 
 em {
