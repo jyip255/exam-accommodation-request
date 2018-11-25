@@ -29,7 +29,7 @@ class Examrequest(db.Model):
         return '<Record for {}>'.format(self.student_name)
 
 class Users(db.Model):
-    netid = db.Column(db.String(120), primary_key=True)
+    net_id = db.Column(db.String(120), primary_key=True)
     firstname = db.Column(db.String(120))
     lastname = db.Column(db.String(120))
     psid = db.Column(db.String(120))
