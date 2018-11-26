@@ -1,22 +1,21 @@
-from flask import render_template, request, redirect, url_for
+from flask import render_template, request, abort, redirect, url_for
 from app import app, db
 from time import localtime, strftime
 from flask_cas import login_required
 from werkzeug import secure_filename
 import os
+from . import cas
+from pdf2image import convert_from_path
+import os
+
+from app.forms import StudentForm, AddForm
+from app.models import Users, Examrequest
 
 # QR code additions
 import pyqrcode
 import png
 from PIL import Image
 import pyzbar.pyzbar as pyzbar
-
-from werkzeug import secure_filename
-from pdf2image import convert_from_path
-import os
-
-from app.forms import StudentForm, AddForm
-from app.models import Examrequest
 
 UPLOAD_FOLDER = '/images'
 ALLOWED_EXTENSIONS=set(['pdf','jpg'])
@@ -28,16 +27,13 @@ from flask_uploads import UploadSet, configure_uploads, IMAGES
 photos = UploadSet('photos', IMAGES)
 configure_uploads(app, photos)
 
-UPLOAD_FOLDER = '/images'
-ALLOWED_EXTENSIONS=set(['pdf','jpg'])
-app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
-APP_ROOT = os.path.dirname(os.path.abspath(__file__))
-
 @app.route('/', methods=['GET', 'POST'])
 @app.route('/index', methods=['GET', 'POST'])
 @login_required
 
 def index():
+    if Users.query.filter_by(net_id=cas.username).all()==[]:
+        abort(403)
     # Get student name from form
     form = StudentForm(request.form)
     # Make sure form has valid inputs & is making POST request

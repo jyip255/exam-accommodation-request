@@ -27,3 +27,11 @@ class Examrequest(db.Model):
     # Defines how the object prints in console
     def __repr__(self):
         return '<Record for {}>'.format(self.student_name)
+
+class Users(db.Model):
+    net_id = db.Column(db.String(120), primary_key=True)
+    firstname = db.Column(db.String(120))
+    lastname = db.Column(db.String(120))
+    psid = db.Column(db.String(120))
+    def __repr__(self):
+        return '<Record for {}>'.format(self.netid)
