@@ -8,7 +8,7 @@ from . import cas
 from pdf2image import convert_from_path
 import os
 
-from app.forms import StudentForm, AddForm
+from app.forms import StudentForm, AddForm, FileForm
 from app.models import Users, Examrequest
 
 # QR code additions
@@ -145,5 +145,29 @@ def uploadPdf():
         else:
             return render_template('uploadPdfError.html')
     return render_template('uploadPdf.html')
-    
 
+@app.route('/uploadSpecific/<netid>', methods=['GET', 'POST'])
+def uploadSpecific(netid):
+    target = os.path.join(APP_ROOT, 'images/')
+    for file in request.files.getlist("file"):
+        if allowed_file(file.filename):
+            filename = file.filename
+            destination = "/".join([target, filename])
+            file.save(destination)
+            updatedRequest = Examrequest.query.filter(Examrequest.student_netid==netid).first()
+            updatedRequest.has_file="True"
+            updatedRequest.file_path=filename
+            db.session.commit()
+            return render_template('uploadSuccess.html', filename=filename)
+        else:
+            return render_template('uploadPdfError.html')
+
+@app.route('/requestListHasFile', methods=['GET', 'POST'])
+def requestListHasFile():
+    rows = Examrequest.query.filter(Examrequest.has_file=="True")
+    return render_template('requestList.html', rows = rows)
+
+@app.route('/requestListNoFile', methods=['GET', 'POST'])
+def requestListNoFile():
+    rows = Examrequest.query.filter(Examrequest.has_file == None)
+    return render_template('requestList.html', rows = rows)

@@ -1,0 +1,9 @@
+{% extends "base.html" %}
+{% import "bootstrap/utils.html" as utils %}
+{% import "bootstrap/wtf.html" as wtf %}
+
+{% block content %}
+<h1> Your upload of {{ filename }} was successful!</h1>
+<h2> Bringing you back to the request list in three seconds.</h2>
+<meta http-equiv="refresh" content="3;url=/requestList" />
+{% endblock %}

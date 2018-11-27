@@ -1,6 +1,8 @@
 from flask_wtf import FlaskForm
+from flask_uploads import UploadSet, IMAGES
 from wtforms import StringField, SubmitField, IntegerField, RadioField, SelectField, TextField, TextAreaField, DateTimeField
 from wtforms.validators import DataRequired, Length, Email, NumberRange, Optional
+from flask_wtf.file import FileField, FileAllowed, FileRequired
 from wtforms.widgets import TextArea
 
 EXAM_TYPE_CHOICES = [('','---'), ('Midterm', 'Midterm'), ('Final', 'Final')]
@@ -35,3 +37,7 @@ class AddForm(FlaskForm):
     accommodations = TextAreaField(label='Exam Accommodations', widget=TextArea(), validators=[DataRequired()])
     instructor_notes = TextAreaField(label='Instructor Notes', widget=TextArea())
     submit = SubmitField('Submit')
+
+# Form for files
+class FileForm(FlaskForm):
+    upload = FileField('image', validators=[FileRequired()])
