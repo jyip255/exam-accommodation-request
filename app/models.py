@@ -26,6 +26,7 @@ class Examrequest(db.Model):
     instructor_notes = db.Column(db.String(120), index=True)
     file_path = db.Column(db.String(120))
     has_file = db.Column(db.String(120))
+    date = db.Column(db.String(120))
     # Defines how the object prints in console
     def __repr__(self):
         return '<Record for {}>'.format(self.student_name)
