@@ -7,6 +7,7 @@ import os
 from . import cas
 from pdf2image import convert_from_path
 import os
+import wand.image
 
 from app.forms import StudentForm, AddForm, FileForm
 from app.models import Users, Examrequest
@@ -111,65 +112,52 @@ def print(netid):
 
 @app.route('/upload', methods=['GET', 'POST'])
 def upload():
-    if request.method == 'POST' and 'photo' in request.files:
-        filename = photos.save(request.files['photo'])
-        filename = 'app/static/uploads/'+filename
-        if pyzbar.decode(Image.open(filename)) != []:
-            decodedImg = pyzbar.decode(Image.open(filename))[0].data.decode("utf-8")
-            reqId = decodedImg.split('/')[-1]
-        else:
-            reqId = "nullexamreq"
-        updatedRequest = Examrequest.query.filter(Examrequest.student_netid==reqId).first()
-        app.logger.warning(updatedRequest)
-        if updatedRequest != None:
-            updatedRequest.has_file="True"
-            updatedRequest.file_path=filename
-            db.session.commit()
-            msg = "Added to request "+reqId+" successfully!"
-        else:
-            msg = "Unable to add to exam request."
-        return render_template('upload.html', msg=msg)
-    return render_template('upload.html')
-
-@app.route('/uploadPdf', methods=['GET', 'POST'])
-def uploadPdf():
-    target = os.path.join(APP_ROOT, 'images/')
-    if not os.path.isdir(target):
-        os.mkdir(target)
     for file in request.files.getlist("file"):
         if allowed_file(file.filename):
             filename = secure_filename(file.filename)
             notypename = filename[:-4]
-            dest = "/".join(['app/static/uploads', filename])
-            file.save(dest)
-            app.logger.warning(dest)
-            app.logger.warning(os.path.isfile(dest))
-            pages = convert_from_path(dest)
-            app.logger.warning(pages)
-            i = 1
-            for page in pages:
-                destination = "/".join([target, notypename + str(i) + ".jpg"])
-                app.logger.warning(destination)
-                page.save(destination)
-                i+=1
-            return render_template('complete.html', image_name=notypename+str(1)+".jpg")
-            #destination = "/".join([target, tojpg + ".jpg"])
-            #file.save(destination)
+            filename = "app/static/uploads/"+filename
+            file.save(filename)
+            if filename.endswith('.jpg') or filename.endswith('.jpeg'):
+                imgfilename = filename
+            if filename.endswith('.pdf'):
+                with wand.image.Image(filename=filename) as img:
+                    with img.convert('jpg') as converted:
+                        converted.save(filename='app/static/temp/'+notypename+".jpg")
+                        imgfilename = 'app/static/temp/'+notypename+".jpg"
+            if pyzbar.decode(Image.open(imgfilename)) != []:
+                decodedImg = pyzbar.decode(Image.open(imgfilename))[0].data.decode("utf-8")
+                app.logger.warning(decodedImg)
+                reqId = decodedImg.split('/')[-1]
+            else:
+                reqId = "nullexamreq"
+            app.logger.warning(reqId)
+            updatedRequest = Examrequest.query.filter(Examrequest.student_netid==reqId).first()
+            app.logger.warning(updatedRequest)
+            if reqId == "nullexamreq":
+                msg = "QR code not found on image."
+            elif updatedRequest is None:
+                msg = "QR code does not match any request ID."
+            else:
+                updatedRequest.has_file="True"
+                updatedRequest.file_path=filename
+                db.session.commit()
+                msg = "Added to request "+reqId+" successfully!"
+            return render_template('upload.html', msg=msg)
         else:
-            return render_template('uploadPdfError.html')
-    return render_template('uploadPdf.html')
+            return render_template('upload.html', msg="File format not accepted.")
+    return render_template('upload.html')
 
 @app.route('/uploadSpecific/<netid>', methods=['GET', 'POST'])
 def uploadSpecific(netid):
-    target = os.path.join(APP_ROOT, 'images/')
     for file in request.files.getlist("file"):
         if allowed_file(file.filename):
             filename = file.filename
-            destination = "/".join([target, filename])
+            destination = "app/static/uploads/"+filename
             file.save(destination)
             updatedRequest = Examrequest.query.filter(Examrequest.student_netid==netid).first()
             updatedRequest.has_file="True"
-            updatedRequest.file_path=filename
+            updatedRequest.file_path=destination
             db.session.commit()
             return render_template('uploadSuccess.html', filename=filename)
         else:

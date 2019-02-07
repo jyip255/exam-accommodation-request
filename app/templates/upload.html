@@ -5,11 +5,10 @@
 
 {% block content %}
   <h1>Read QR Code</h1>
-  <div>Upload a JPEG file to read the QR code on the page. (MUST be .jpg, testing purposes only)</div>
-  <div>For an example, save one of the cover sheets as a JPEG. (The QR code is auto-generated and contains a mock link that ends with the student's NetID.)</div>
+  <div>Upload a JPG or PDF file to attach to an exam request.</div>
   <br>
-  <form method=POST enctype=multipart/form-data action="{{ url_for('upload') }}">
-	  <input type=file name=photo>
+  <form action = {{'/upload'}} method="post" enctype=multipart/form-data>
+	  <input type=file name=file>
 	  <br>
 	  <input type="submit" class="btn btn-md btn-info">
   </form>
