@@ -2,8 +2,19 @@
 {% import "bootstrap/utils.html" as utils %}
 {% import "bootstrap/wtf.html" as wtf %}
 
+{% block scripts %}
+  {{ super() }}
+  {{ datepicker.loader() }} {# to load jQuery-ui #}
+  {{ datepicker.picker(id=".dp") }}
+{% endblock %}
+
 {% block content %}
 <h1>Add Request</h1>
+<h4>Exam Date:</h4>
+<form class="verticalform">
+  <input type="text" class="form-control dp" />
+</form>
+
 <form class="form" method="post" role="form">
   {{ form.hidden_tag() }}
   {{ wtf.form_errors(form, hiddens="only") }}
@@ -14,6 +25,8 @@
   {{ wtf.form_field(form.course_name, placeholder="Enter Course Name (e.g. Intro to Software Engineering)", class="form-control md-5") }}
   {{ wtf.form_field(form.exam_type, class="form-control md-5") }}
   {{ wtf.form_field(form.exam_format, class="form-control md-5") }}
+  <input type="text" class="form-control dp" id="datetest"/>
+  {{ wtf.form_field(form.date, class="form-control dp") }}
   {{ wtf.form_field(form.exam_time, placeholder="Enter Original Time of Exam (e.g. 2018-01-25 10:10)", class="form-control md-5") }}
   {{ wtf.form_field(form.exam_csd_time, placeholder="Enter CSD Time of Exam (e.g. 2018-01-25 13:10)", class="form-control md-5") }}
   {{ wtf.form_field(form.csd_campus, class="form-control md-5") }}

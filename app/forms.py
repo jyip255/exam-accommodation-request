@@ -23,6 +23,7 @@ class AddForm(FlaskForm):
     course_name = StringField(label='Course Name', validators=[DataRequired()])
     exam_type = SelectField(label='Exam Type', validators=[DataRequired()], choices=EXAM_TYPE_CHOICES)
     exam_format = SelectField(label='Exam Format', validators=[DataRequired()], choices=EXAM_FORMAT_CHOICES)
+    date = TextAreaField(label='Exam Date')
     exam_time = DateTimeField(label='Original Exam Time', validators=[DataRequired()], format='%Y-%m-%d %H:%M')
     exam_csd_time = DateTimeField(label='CSD Exam Time', validators=[DataRequired()], format='%Y-%m-%d %H:%M')
     csd_campus = SelectField(label='CSD Exam Campus', validators=[DataRequired()], choices=CSD_EXAM_CAMPUS)

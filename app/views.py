@@ -1,4 +1,4 @@
-from flask import render_template, request, abort, redirect, url_for
+from flask import Flask, render_template, request, abort, redirect, url_for
 from app import app, db
 from time import localtime, strftime
 from flask_cas import login_required
@@ -16,6 +16,12 @@ import pyqrcode
 import png
 from PIL import Image
 import pyzbar.pyzbar as pyzbar
+
+# Date/time additions
+from flask_bootstrap import Bootstrap
+from flask_datepicker import datepicker
+
+datepicker(app)
 
 UPLOAD_FOLDER = '/images'
 ALLOWED_EXTENSIONS=set(['pdf','jpg'])
@@ -75,6 +81,7 @@ def add():
             course_name=form.course_name.data,
             exam_type=form.exam_type.data,
             exam_format=form.exam_format.data,
+            date=form.date.data,
             exam_time=form.exam_time.data,
             exam_csd_time=form.exam_csd_time.data,
             csd_campus=form.csd_campus.data,
@@ -171,3 +178,7 @@ def requestListHasFile():
 def requestListNoFile():
     rows = Examrequest.query.filter(Examrequest.has_file == None)
     return render_template('requestList.html', rows = rows)
+
+@app.route('/dateTest', methods=['GET', 'POST'])
+def dateTest():
+    return render_template('dateTest.html')
