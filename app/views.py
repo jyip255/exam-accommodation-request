@@ -103,7 +103,8 @@ def add():
 @app.route('/requestList', methods=['GET', 'POST'])
 def requestList():
     rows = Examrequest.query.all()
-    return render_template('requestList.html', rows = rows)
+    filterby = 'id'
+    return render_template('requestList.html', rows = rows, filterby = filterby)
 
 @app.route('/print/<netid>', methods=['GET', 'POST'])
 def print(netid):
@@ -172,12 +173,44 @@ def uploadSpecific(netid):
 @app.route('/requestListHasFile', methods=['GET', 'POST'])
 def requestListHasFile():
     rows = Examrequest.query.filter(Examrequest.has_file=="True")
-    return render_template('requestList.html', rows = rows)
+    filterby = 'id'
+    return render_template('requestList.html', rows = rows, filterby = filterby)
 
 @app.route('/requestListNoFile', methods=['GET', 'POST'])
 def requestListNoFile():
     rows = Examrequest.query.filter(Examrequest.has_file == None)
-    return render_template('requestList.html', rows = rows)
+    filterby = 'id'
+    return render_template('requestList.html', rows = rows, filterby = filterby)
+
+@app.route('/requestListRequestID', methods=['GET', 'POST'])
+def requestListRequestID():
+    rows = Examrequest.query.all()
+    filterby = 'student_name'
+    return render_template('requestList.html', rows = rows, filterby = filterby)
+
+@app.route('/requestListPeoplesoftID', methods=['GET', 'POST'])
+def requestListPeoplesoftID():
+    rows = Examrequest.query.all()
+    filterby = 'student_id'
+    return render_template('requestList.html', rows = rows, filterby = filterby)
+
+@app.route('/requestListStudentNetID', methods=['GET', 'POST'])
+def requestListStudentNetID():
+    rows = Examrequest.query.all()
+    filterby = 'student_netid'
+    return render_template('requestList.html', rows = rows, filterby = filterby)
+
+@app.route('/requestListStudentName', methods=['GET', 'POST'])
+def requestListStudentName():
+    rows = Examrequest.query.all()
+    filterby = 'student_name'
+    return render_template('requestList.html', rows = rows, filterby = filterby)
+
+@app.route('/requestListCourseID', methods=['GET', 'POST'])
+def requestListStudentCourseID():
+    rows = Examrequest.query.all()
+    filterby = 'course_id'
+    return render_template('requestList.html', rows = rows, filterby = filterby)
 
 @app.route('/dateTest', methods=['GET', 'POST'])
 def dateTest():

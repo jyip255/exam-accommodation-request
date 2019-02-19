@@ -7,17 +7,17 @@
     <table class="table">
         <thead>
             <tr>
-                <th scope="col">All
+                <th scope="col">
                     <form action={{'/requestList'}} method="post">
                         <button class="btn btn-info" type="submit">All</button>
                     </form>
                 </th>
-                <th scope="col">Completed
+                <th scope="col">
                     <form action={{'/requestListHasFile'}} method="post">
                         <button class="btn btn-info" type="submit">Completed</button>
                     </form>
                 </th>
-                <th scope="col">Not Completed
+                <th scope="col">
                     <form action={{'/requestListNoFile'}} method="post">
                         <button class="btn btn-info" type="submit">Not Completed</button>
                     </form>
@@ -36,11 +36,31 @@
                 <th scope="col">File attached?</th>
                 <th scope="col">File Path</th>
                 <th scope="col">Date</th>
-                <th scope="col">Request ID</th>
-                <th scope="col">Peoplesoft ID #</th>
-                <th scope="col">Student Net ID</th>
-                <th scope="col">Student Name</th>
-                <th scope="col">Course ID</th>
+                <th scope="col">
+                    <form action={{'/requestList'}} method="post">
+                        <button class="btn btn-info" type="submit">Request ID</button>
+                    </form>
+                </th>
+                <th scope="col">
+                    <form action={{'/requestListPeoplesoftID'}} method="post">
+                        <button class="btn btn-info" type="submit">Peoplesoft ID</button>
+                    </form>
+                </th>
+                <th scope="col">
+                    <form action={{'/requestListStudentNetID'}} method="post">
+                        <button class="btn btn-info" type="submit">Student Net ID</button>
+                    </form>
+                </th>
+                <th scope="col">
+                    <form action={{'/requestListStudentName'}} method="post">
+                        <button class="btn btn-info" type="submit">Student Name</button>
+                    </form>
+                </th>
+                <th scope="col">
+                    <form action={{'/requestListCourseID'}} method="post">
+                        <button class="btn btn-info" type="submit">Course ID</button>
+                    </form>
+                </th>
                 <th scope="col">Course Name</th>
                 <th scope="col">Exam Type</th>
                 <th scope="col">Exam Format</th>
@@ -60,7 +80,7 @@
             </tr>
         </thead>
         <tbody>
-            {% for row in rows %}
+            {% for row in rows | sort(attribute=filterby) %}
             <tr>
                 <th scope="row">
                     <form action={{'/print/'+row.student_netid}} method="post">
