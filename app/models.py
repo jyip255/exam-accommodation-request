@@ -11,6 +11,7 @@ class Examrequest(db.Model):
     course_name = db.Column(db.String(120), index=True)
     exam_type = db.Column(db.String(120), index=True)
     exam_format = db.Column(db.String(120), index=True)
+    date = db.Column(db.String(120))
     exam_time = db.Column(db.DateTime(), index=True)
     exam_csd_time = db.Column(db.DateTime(), index=True)
     csd_campus = db.Column(db.String(120), index=True)
