@@ -117,14 +117,20 @@ def upload():
             filename = secure_filename(file.filename)
             notypename = filename[:-4]
             filename = "app/static/uploads/"+filename
-            file.save(filename)
+            file.save(filename)            #COMMENTED
             if filename.endswith('.jpg') or filename.endswith('.jpeg'):
                 imgfilename = filename
+                with wand.image.Image(filename=filename) as img:
+                    with img.convert('pdf') as converted:
+                        converted.save(filename='app/static/uploads/'+notypename+".pdf")
+                #file.save(filename)         #ADDED
             if filename.endswith('.pdf'):
                 with wand.image.Image(filename=filename) as img:
                     with img.convert('jpg') as converted:
-                        converted.save(filename='app/static/temp/'+notypename+".jpg")
-                        imgfilename = 'app/static/temp/'+notypename+".jpg"
+                        converted.save(filename='app/static/uploads/'+notypename+".jpg")
+                        #CHANGED^^^^^^^^^
+                        imgfilename = 'app/static/uploads/'+notypename+".jpg"
+                        #CHANGED^^^^^^^^^
             if pyzbar.decode(Image.open(imgfilename)) != []:
                 decodedImg = pyzbar.decode(Image.open(imgfilename))[0].data.decode("utf-8")
                 app.logger.warning(decodedImg)
@@ -136,10 +142,17 @@ def upload():
             app.logger.warning(updatedRequest)
             if reqId == "nullexamreq":
                 msg = "QR code not found on image."
+                os.remove('app/static/uploads/'+notypename+".pdf")
+                os.remove('app/static/uploads/'+notypename+".jpg")
             elif updatedRequest is None:
                 msg = "QR code does not match any request ID."
+                os.remove('app/static/uploads/'+notypename+".pdf")
+                os.remove('app/static/uploads/'+notypename+".jpg")
             else:
                 updatedRequest.has_file="True"
+                if filename.endswith('.jpg'):
+                    filename = 'app/static/uploads/'+notypename+".pdf"
+                os.remove('app/static/uploads/'+notypename+".jpg")
                 updatedRequest.file_path=filename
                 db.session.commit()
                 msg = "Added to request "+reqId+" successfully!"
