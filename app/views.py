@@ -25,15 +25,7 @@ from flask_datepicker import datepicker
 
 datepicker(app)
 
-UPLOAD_FOLDER = '/images'
 ALLOWED_EXTENSIONS=set(['pdf','jpg'])
-app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
-APP_ROOT = os.path.dirname(os.path.abspath(__file__))
-
-# Quick fix for uploading to show QR Code
-from flask_uploads import UploadSet, configure_uploads, IMAGES
-photos = UploadSet('photos', IMAGES)
-configure_uploads(app, photos)
 
 @app.route('/', methods=['GET', 'POST'])
 @app.route('/index', methods=['GET', 'POST'])
