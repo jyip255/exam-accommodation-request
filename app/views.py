@@ -34,28 +34,17 @@ ALLOWED_EXTENSIONS=set(['pdf','jpg'])
 def index():
     if Users.query.filter_by(net_id=cas.username).all()==[]:
         abort(403)
-    # Get student name from form
     form = StudentForm(request.form)
-    # Make sure form has valid inputs & is making POST request
     if form.validate_on_submit():
-        # Display form input (see console)
         print(form.searchStudents.data)
-        # Get all records in Examrequest table (can look up SQLAlchemy commands to filter results, uses Examrequest in models.py)
         students = Examrequest.query.all()
-        # Initialize list that will contain students where name matches form input
         searchResults = []
-        # For each student
         for student in students:
-            # Display all info from DB (see console)
             print('ID:{}, STUDENT_ID:{}, STUDENT_NETID:{}, STUDENT_NAME:{}, COURSE_ID:{}, COURSE_NAME:{}, EXAM_TYPE:{}, EXAM_FORMAT:{}, EXAM_TIME:{}, EXAM_CSD_TIME:{}, CSD_CAMPUS:{}, CSD_BUILDING:{}, CSD_ROOM:{}, CSD_SEAT:{}, INSTRUCTOR_NETID:{}, INSTRUCTOR_NAME:{}, INSTRUCTOR_PHONE:{}, INSTRUCTOR_EMAIL:{}, MATERIAL:{}, ACCOMMODATIONS:{}, INSTRUCTOR_NOTES:{}>'
                 .format(student.id, student.student_id, student.student_netid, student.student_name,  student.course_id, student.course_name, student.exam_type, student.exam_format, student.exam_time, student.exam_csd_time, student.csd_campus, student.csd_building, student.csd_room, student.csd_seat, student.instructor_netid, student.instructor_name, student.instructor_phone, student.instructor_email, student.material, student.accommodations, student.instructor_notes))
-            # Check if student name matches form input
             if student.student_name == form.searchStudents.data:
-                # If so, add student to search results
                 searchResults.append(student)
-            # Send information to index.html to be shown on screen
         return render_template('index.html', form=form, results=searchResults)
-    # If form is not validated or is making GET request (not POST), return index.html without results
     return render_template('index.html', form=form)
 
 def allowed_file(filename):
@@ -64,10 +53,8 @@ def allowed_file(filename):
         
 @app.route('/requestAdd', methods=['GET','POST'])
 def add():
-    # Get AddForm from forms.py
     form = AddForm(request.form)
     if form.validate_on_submit():
-        # Add the new request to the database
         p = Examrequest(student_id=form.student_id.data,
             student_netid=form.student_netid.data,
             student_name=form.student_name.data, 
@@ -100,15 +87,14 @@ def requestList():
     filterby = 'id'
     return render_template('requestList.html', rows = rows, filterby = filterby)
 
-@app.route('/print/<netid>', methods=['GET', 'POST'])
-def print(netid):
-    # May need to change to be based on request id instead of netid after adding primary key (request id) to db
-    req = Examrequest.query.filter(Examrequest.student_netid==netid).first()
+@app.route('/print/<reqid>', methods=['GET', 'POST'])
+def print(reqid):
+    req = Examrequest.query.filter(Examrequest.id==reqid).first()
     currentTime = strftime("%m/%d/%Y %I:%M %p", localtime())
-    filename = "./app/static/qrcodes/"+netid+".png"
-    qr = pyqrcode.create("yourapp.uconn.edu/exam_requests/"+netid)
+    filename = "./app/static/qrcodes/"+reqid+".png"
+    qr = pyqrcode.create("yourapp.uconn.edu/exam_requests/"+reqid)
     qr.png(filename, scale=4)
-    return render_template('print.html', req=req, currentTime = currentTime, filename="qrcodes/"+netid+".png")
+    return render_template('print.html', req=req, currentTime = currentTime, filename="qrcodes/"+reqid+".png")
 
 @app.route('/upload', methods=['GET', 'POST'])
 def upload():
@@ -117,29 +103,24 @@ def upload():
             filename = secure_filename(file.filename)
             notypename = filename[:-4]
             filename = "app/static/uploads/"+filename
-            file.save(filename)            #COMMENTED
+            file.save(filename)
             if filename.endswith('.jpg') or filename.endswith('.jpeg'):
                 imgfilename = filename
                 with wand.image.Image(filename=filename) as img:
                     with img.convert('pdf') as converted:
                         converted.save(filename='app/static/uploads/'+notypename+".pdf")
-                #file.save(filename)         #ADDED
             if filename.endswith('.pdf'):
                 with wand.image.Image(filename=filename) as img:
                     with img.convert('jpg') as converted:
                         converted.save(filename='app/static/uploads/'+notypename+".jpg")
-                        #CHANGED^^^^^^^^^
                         imgfilename = 'app/static/uploads/'+notypename+".jpg"
-                        #CHANGED^^^^^^^^^
             if pyzbar.decode(Image.open(imgfilename)) != []:
                 decodedImg = pyzbar.decode(Image.open(imgfilename))[0].data.decode("utf-8")
                 app.logger.warning(decodedImg)
                 reqId = decodedImg.split('/')[-1]
             else:
                 reqId = "nullexamreq"
-            app.logger.warning(reqId)
-            updatedRequest = Examrequest.query.filter(Examrequest.student_netid==reqId).first()
-            app.logger.warning(updatedRequest)
+            updatedRequest = Examrequest.query.filter(Examrequest.id==reqId).first()
             if reqId == "nullexamreq":
                 msg = "QR code not found on image."
                 os.remove('app/static/uploads/'+notypename+".pdf")
@@ -161,14 +142,14 @@ def upload():
             return render_template('upload.html', msg="File format not accepted.")
     return render_template('upload.html')
 
-@app.route('/uploadSpecific/<netid>', methods=['GET', 'POST'])
-def uploadSpecific(netid):
+@app.route('/uploadSpecific/<reqid>', methods=['GET', 'POST'])
+def uploadSpecific(reqid):
     for file in request.files.getlist("file"):
         if allowed_file(file.filename):
             filename = file.filename
             destination = "app/static/uploads/"+filename
             file.save(destination)
-            updatedRequest = Examrequest.query.filter(Examrequest.student_netid==netid).first()
+            updatedRequest = Examrequest.query.filter(Examrequest.id==reqid).first()
             updatedRequest.has_file="True"
             updatedRequest.file_path=destination
             db.session.commit()
