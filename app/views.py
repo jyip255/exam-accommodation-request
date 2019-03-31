@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, abort, redirect, url_for
+from flask import Flask, Response, render_template, request, abort, redirect, url_for
 from app import app, db
 from time import localtime, strftime
 from flask_cas import login_required
@@ -142,6 +142,15 @@ def upload():
             return render_template('upload.html', msg="File format not accepted.")
     return render_template('upload.html')
 
+@app.route('/bulkUpload', methods=['GET', 'POST'])
+def bulkUpload():
+    for file in request.files.getlist("file"):
+        filepath = "../shared/check/"+file.filename
+        file.save(filepath)
+    if len(request.files.getlist("file")) > 0:
+        return render_template('bulkUpload.html',msg="Upload complete! Changes may take time to load.")
+    return render_template('bulkUpload.html')
+
 @app.route('/uploadSpecific/<reqid>', methods=['GET', 'POST'])
 def uploadSpecific(reqid):
     for file in request.files.getlist("file"):
@@ -202,3 +211,19 @@ def requestListStudentCourseID():
 @app.route('/dateTest', methods=['GET', 'POST'])
 def dateTest():
     return render_template('dateTest.html')
+
+@app.route('/attach', methods=['POST'])
+def addToReqId():
+    data = request.get_json()
+    filepath = data['filepath']
+    reqId = data['reqid']
+    updatedRequest = Examrequest.query.filter(Examrequest.id==reqId).first()
+    if updatedRequest is None:
+        msg = "QR code does not match any request ID."
+        return Response(msg, status=400);
+    else:
+        updatedRequest.has_file="True"
+        updatedRequest.file_path=filepath
+        db.session.commit()
+        msg = "Added to request "+reqId+" successfully!"
+        return Response(msg, status=200);
