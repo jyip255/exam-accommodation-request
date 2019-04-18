@@ -26,11 +26,11 @@ from flask_datepicker import datepicker
 datepicker(app)
 
 ALLOWED_EXTENSIONS=set(['pdf','jpg'])
+DOMAIN_NAME = "https://58517d89.ngrok.io/print/"
 
 @app.route('/', methods=['GET', 'POST'])
 @app.route('/index', methods=['GET', 'POST'])
 @login_required
-
 def index():
     if Users.query.filter_by(net_id=cas.username).all()==[]:
         abort(403)
@@ -52,6 +52,7 @@ def allowed_file(filename):
         filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
         
 @app.route('/requestAdd', methods=['GET','POST'])
+@login_required
 def add():
     form = AddForm(request.form)
     if form.validate_on_submit():
@@ -82,6 +83,7 @@ def add():
     return render_template('requestAdd.html', form=form)
 
 @app.route('/requestList', methods=['GET', 'POST'])
+@login_required
 def requestList():
     rows = Examrequest.query.all()
     filterby = 'id'
@@ -92,11 +94,12 @@ def print(reqid):
     req = Examrequest.query.filter(Examrequest.id==reqid).first()
     currentTime = strftime("%m/%d/%Y %I:%M %p", localtime())
     filename = "./app/static/qrcodes/"+reqid+".png"
-    qr = pyqrcode.create("yourapp.uconn.edu/exam_requests/"+reqid)
+    qr = pyqrcode.create(DOMAIN_NAME+reqid)
     qr.png(filename, scale=4)
     return render_template('print.html', req=req, currentTime = currentTime, filename="qrcodes/"+reqid+".png")
 
 @app.route('/upload', methods=['GET', 'POST'])
+@login_required
 def upload():
     for file in request.files.getlist("file"):
         if allowed_file(file.filename):
@@ -143,6 +146,7 @@ def upload():
     return render_template('upload.html')
 
 @app.route('/bulkUpload', methods=['GET', 'POST'])
+@login_required
 def bulkUpload():
     for file in request.files.getlist("file"):
         filepath = "../shared/check/"+file.filename
@@ -152,6 +156,7 @@ def bulkUpload():
     return render_template('bulkUpload.html')
 
 @app.route('/uploadSpecific/<reqid>', methods=['GET', 'POST'])
+@login_required
 def uploadSpecific(reqid):
     for file in request.files.getlist("file"):
         if allowed_file(file.filename):
@@ -167,52 +172,61 @@ def uploadSpecific(reqid):
             return render_template('uploadPdfError.html')
 
 @app.route('/requestListHasFile', methods=['GET', 'POST'])
+@login_required
 def requestListHasFile():
     rows = Examrequest.query.filter(Examrequest.has_file=="True")
     filterby = 'id'
     return render_template('requestList.html', rows = rows, filterby = filterby)
 
 @app.route('/requestListNoFile', methods=['GET', 'POST'])
+@login_required
 def requestListNoFile():
     rows = Examrequest.query.filter(Examrequest.has_file == None)
     filterby = 'id'
     return render_template('requestList.html', rows = rows, filterby = filterby)
 
 @app.route('/requestListRequestID', methods=['GET', 'POST'])
+@login_required
 def requestListRequestID():
     rows = Examrequest.query.all()
     filterby = 'student_name'
     return render_template('requestList.html', rows = rows, filterby = filterby)
 
 @app.route('/requestListPeoplesoftID', methods=['GET', 'POST'])
+@login_required
 def requestListPeoplesoftID():
     rows = Examrequest.query.all()
     filterby = 'student_id'
     return render_template('requestList.html', rows = rows, filterby = filterby)
 
 @app.route('/requestListStudentNetID', methods=['GET', 'POST'])
+@login_required
 def requestListStudentNetID():
     rows = Examrequest.query.all()
     filterby = 'student_netid'
     return render_template('requestList.html', rows = rows, filterby = filterby)
 
 @app.route('/requestListStudentName', methods=['GET', 'POST'])
+@login_required
 def requestListStudentName():
     rows = Examrequest.query.all()
     filterby = 'student_name'
     return render_template('requestList.html', rows = rows, filterby = filterby)
 
 @app.route('/requestListCourseID', methods=['GET', 'POST'])
+@login_required
 def requestListStudentCourseID():
     rows = Examrequest.query.all()
     filterby = 'course_id'
     return render_template('requestList.html', rows = rows, filterby = filterby)
 
 @app.route('/dateTest', methods=['GET', 'POST'])
+@login_required
 def dateTest():
     return render_template('dateTest.html')
 
 @app.route('/attach', methods=['POST'])
+@login_required
 def addToReqId():
     data = request.get_json()
     filepath = data['filepath']
@@ -220,7 +234,7 @@ def addToReqId():
     updatedRequest = Examrequest.query.filter(Examrequest.id==reqId).first()
     if updatedRequest is None:
         msg = "QR code does not match any request ID."
-        return Response(msg, status=400);
+        return Response(msg, status=404);
     else:
         updatedRequest.has_file="True"
         updatedRequest.file_path=filepath
