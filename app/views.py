@@ -26,7 +26,7 @@ from flask_datepicker import datepicker
 datepicker(app)
 
 ALLOWED_EXTENSIONS=set(['pdf','jpg'])
-DOMAIN_NAME = "https://58517d89.ngrok.io/print/"
+DOMAIN_NAME = "https://b8700398.ngrok.io"
 
 @app.route('/', methods=['GET', 'POST'])
 @app.route('/index', methods=['GET', 'POST'])
@@ -94,7 +94,7 @@ def print(reqid):
     req = Examrequest.query.filter(Examrequest.id==reqid).first()
     currentTime = strftime("%m/%d/%Y %I:%M %p", localtime())
     filename = "./app/static/qrcodes/"+reqid+".png"
-    qr = pyqrcode.create(DOMAIN_NAME+reqid)
+    qr = pyqrcode.create(DOMAIN_NAME+"/print/"+reqid)
     qr.png(filename, scale=4)
     return render_template('print.html', req=req, currentTime = currentTime, filename="qrcodes/"+reqid+".png")
 
@@ -226,7 +226,6 @@ def dateTest():
     return render_template('dateTest.html')
 
 @app.route('/attach', methods=['POST'])
-@login_required
 def addToReqId():
     data = request.get_json()
     filepath = data['filepath']
